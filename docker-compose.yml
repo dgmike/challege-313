@@ -8,3 +8,5 @@ services:
     - ./src:/app
     ports:
     - 4567:4567
+    environment:
+      OVERWATCH_API: https://overwatch-api.net
