@@ -3,6 +3,7 @@ require 'json'
 require './services/heros'
 require './libs/request_filter'
 require './mapper/hero_mapper'
+require './mapper/hero_abilities_mapper'
 require './mapper/collection_mapper'
 
 hero_service = Hero.new
@@ -103,7 +104,7 @@ get '/api/heros/:hero_id/abilities' do
 	status 200
 	headers 'Content-Type' => 'application/json; charset=utf-8'
 
-	body JSON.dump response_body['abilities']
+	body JSON.dump HeroAbilitiesMapper.new("/v1", hero_id, response_body['abilities']).convert
 end
 
 get '/api/abilities' do
