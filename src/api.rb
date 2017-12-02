@@ -1,12 +1,15 @@
 require 'sinatra'
 require 'json'
 require './services/heros'
+require './services/abilities'
 require './libs/request_filter'
 require './mapper/hero_mapper'
 require './mapper/hero_abilities_mapper'
-require './mapper/collection_mapper'
+require './mapper/heros_collection_mapper'
+require './mapper/abilities_collection_mapper'
 
-hero_service = Hero.new
+hero_service = Heros.new
+ability_service = Abilities.new
 
 get '/' do
 	status 200
@@ -42,7 +45,7 @@ get '/api/heros' do
 		return body 'Internal server error'
 	end
 
-	mapper = CollectionMapper.new '/api/heros', page, limit, response_body
+	mapper = HerosCollectionMapper.new '/api/heros', page, limit, response_body
 
 	data = mapper.convert
 
@@ -108,11 +111,27 @@ get '/api/heros/:hero_id/abilities' do
 end
 
 get '/api/abilities' do
-	status 501
-  body ''
+	begin
+		page, limit = RequestFilter.pagination_params params['page'], params['limit']
+
+		response = ability_service.fetch_all page: page, limit: limit
+		response_body = JSON.parse response.body, symolize_names: true
+
+		raise 'Error acessing external service' unless response.code == 200
+	rescue
+		status 500
+		return body 'Internal server error'
+	end
+
+	mapper = AbilitiesCollectionMapper.new '/api/abilities', page, limit, response_body
+
+	status 200
+	headers 'Content-Type' => 'application/json; charset=utf-8'
+
+	body JSON.dump mapper.convert
 end
 
 get '/api/abilities/:ability_id' do
 	status 501
-  body ''
+	body ''
 end

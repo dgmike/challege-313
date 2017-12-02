@@ -26,7 +26,7 @@ class CollectionMapper
 	end
 
 	def last_page
-		(@result['total'] / @limit.to_f).ceil 
+		(@result['total'] / @limit.to_f).ceil
 	end
 
 	def next_page?
@@ -38,6 +38,6 @@ class CollectionMapper
 	end
 
 	def convert_results
-		@result['data'].map { |item| HeroMapper.new(@base_url, item).convert }
+		raise 'Method convert_results not implemented'
 	end
 end
