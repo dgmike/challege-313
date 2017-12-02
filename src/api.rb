@@ -29,10 +29,12 @@ get '/api/heros' do
 	begin
 		page = params['page'] || '1'
 		page = '1' if page =~ /\D/
+		page = '1' if page.to_i < 1
 
 		limit = params['limit'] || '1'
 		limit = '10' if limit =~ /\D/
-		limit = '50' if limit.to_i > 50
+		limit = '10' if limit.to_i < 1
+		limit = '100' if limit.to_i > 100
 
 		response = hero_service.fetch_all page: page, limit: limit
 		response_body = JSON.parse response.body, symolize_names: true
