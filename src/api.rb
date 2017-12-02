@@ -27,7 +27,14 @@ end
 
 get '/api/heros' do
 	begin
-		response = hero_service.fetch_all
+		page = params['page'] || '1'
+		page = '1' if page =~ /\D/
+
+		limit = params['limit'] || '1'
+		limit = '10' if limit =~ /\D/
+		limit = '50' if limit.to_i > 50
+
+		response = hero_service.fetch_all page: page, limit: limit
 		response_body = JSON.parse response.body, symolize_names: true
 
 		raise 'Error acessing external service' unless response.code == 200

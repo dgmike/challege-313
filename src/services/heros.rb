@@ -5,6 +5,6 @@ class Hero
 	base_uri ENV['OVERWATCH_API']
 
 	def fetch_all(query = {})
-		self.class.get '/api/v1/hero'
+		self.class.get '/api/v1/hero', query: query
 	end
 end
