@@ -1,3 +1,3 @@
-require './api.rb'
+require './api'
 
 run Sinatra::Application
