@@ -1,16 +1,25 @@
 require 'sinatra'
+require 'json'
 
 get '/' do
 	status 200
-	headers \
-		'Content-Type' => 'application/json; charset=utf-8'
+	headers 'Content-Type' => 'application/json; charset=utf-8'
 
-	body '{}'
+	body JSON.dump links: {
+		self: '/',
+		api: '/api'
+	}
 end
 
 get '/api' do
-	status 501
-  body ''
+	status 200
+	headers 'Content-Type' => 'application/json; charset=utf-8'
+
+  body JSON.dump links: {
+		self: '/api',
+		heros: '/api/heros',
+		abilities: '/api/abilities'
+	}
 end
 
 get '/api/heros' do
