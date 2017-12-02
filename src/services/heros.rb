@@ -1,6 +1,6 @@
 require 'httparty'
 
-class Hero
+class Heros
 	include HTTParty
 	base_uri ENV['OVERWATCH_API']
 

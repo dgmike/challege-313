@@ -1,3 +1,5 @@
+require './mapper/ability_mapper'
+
 class HeroAbilitiesMapper
 	def initialize(base_url, hero_id, result)
 		@base_url = base_url
@@ -15,21 +17,8 @@ class HeroAbilitiesMapper
 			data: convert_data
 		}
 	end
-	
+
 	def convert_data
-		@result.map do |item|
-			{
-				id: item['id'],
-				attributes: {
-					name: item['name'],
-					description: item['description'],
-					is_ultimate: item['is_ultimate'],
-				},
-				links: {
-					self: "#{@base_url}/abilities/#{item['id']}",
-					abilities: "#{@base_url}/abilities",
-				}
-			}
-		end
+		@result.map { |item| AbilityMapper.new("#{@base_url}/abilities", item).convert }
 	end
 end
