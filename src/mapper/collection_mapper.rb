@@ -1,3 +1,5 @@
+require './mapper/hero_mapper'
+
 class CollectionMapper
 	def initialize(base_url, page, limit, result)
 		@base_url = base_url
@@ -36,22 +38,6 @@ class CollectionMapper
 	end
 
 	def convert_results
-		@result['data'].map do |item|
-			{
-				type: 'hero',
-				id: item['id'],
-				attributes: {
-					name: item['name'],
-					real_name: item['real_name'],
-					health: item['health'],
-					armour: item['armour'],
-					shield: item['shield'],
-				},
-				links: {
-					self: "#{@base_url}/#{item['id']}",
-					abilities: "#{@base_url}/#{item['id']}/abilities",
-				},
-			}
-		end
+		@result['data'].map { |item| HeroMapper.new(@base_url, item).convert }
 	end
 end
