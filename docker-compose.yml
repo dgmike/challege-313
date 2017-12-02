@@ -3,8 +3,10 @@ version: '2'
 services:
   app:
     build: .
-    command: ["bundle", "exec", "rackup", "--host", "0.0.0.0", "-p", "4567"]
+    command: ["bundle", "exec", "shotgun", "--host", "0.0.0.0", "-p", "4567"]
     volumes:
     - ./src:/app
     ports:
     - 4567:4567
+    environment:
+      OVERWATCH_API: https://overwatch-api.net
