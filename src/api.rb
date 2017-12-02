@@ -4,6 +4,7 @@ require './services/heros'
 require './services/abilities'
 require './libs/request_filter'
 require './mapper/hero_mapper'
+require './mapper/ability_mapper'
 require './mapper/hero_abilities_mapper'
 require './mapper/heros_collection_mapper'
 require './mapper/abilities_collection_mapper'
@@ -136,6 +137,30 @@ get '/api/abilities' do
 end
 
 get '/api/abilities/:ability_id' do
-	status 501
-	body ''
+	ability_id = params['ability_id']
+	if ability_id =~ /\D/
+		status 422
+		return body 'Invalid ability id'
+	end
+
+	begin
+		response = ability_service.fetch ability_id
+
+		if response.code == 404
+			status 404
+			return body 'Ability not found'
+		end
+
+		raise 'Error acessing external service' unless response.code == 200
+
+		response_body = JSON.parse response.body, symolize_names: true
+	rescue
+		status 500
+		return body 'Internal server error'
+	end
+
+	status 200
+	headers 'Content-Type' => 'application/json; charset=utf-8'
+
+	body JSON.dump AbilityMapper.new('/api/abilities', response_body).convert
 end

@@ -9,6 +9,6 @@ class Abilities
 	end
 
 	def fetch(ability_id)
-		self.class.get "/api/v1/ability/#{hero_id}"
+		self.class.get "/api/v1/ability/#{ability_id}"
 	end
 end
