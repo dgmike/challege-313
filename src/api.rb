@@ -40,6 +40,8 @@ get '/api/heros' do
 		return body 'Internal server error'
 	end
 
+	mapper = CollectionMapper.new '/api/heros', page, limit, response_body
+
 	mapped_data = response_body['data'].map do |item|
 		{
 			type: 'hero',
@@ -58,10 +60,8 @@ get '/api/heros' do
 		}
 	end
 
-	data = {
-		links: CollectionMapper.links('/api/heros', page, limit, response_body['total'].to_i),
-		data: mapped_data,
-	}
+	data = mapper.convert
+	data[:data] = mapped_data
 
 	status 200
 	headers 'Content-Type' => 'application/json; charset=utf-8'
