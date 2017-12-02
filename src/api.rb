@@ -3,6 +3,7 @@ require 'json'
 require './services/heros'
 require './libs/request_filter'
 require './mapper/hero_mapper'
+require './mapper/hero_abilities_mapper'
 require './mapper/collection_mapper'
 
 hero_service = Hero.new
@@ -75,12 +76,35 @@ get '/api/heros/:hero_id' do
 	status 200
 	headers 'Content-Type' => 'application/json; charset=utf-8'
 
-  body JSON.dump HeroMapper.new('/api/heros', response_body).convert
+	body JSON.dump HeroMapper.new('/api/heros', response_body).convert
 end
 
 get '/api/heros/:hero_id/abilities' do
-	status 501
-  body ''
+	hero_id = params['hero_id']
+	if hero_id =~ /\D/
+		status 422
+		return body 'Invalid hero id'
+	end
+
+	begin
+		response = hero_service.fetch hero_id
+
+		if response.code == 404
+			status 404
+			return body 'Hero not found'
+		end
+
+		response_body = JSON.parse response.body, symolize_names: true
+	rescue
+		raise
+		status 500
+		return body 'Internal server error'
+	end
+
+	status 200
+	headers 'Content-Type' => 'application/json; charset=utf-8'
+
+	body JSON.dump HeroAbilitiesMapper.new("/v1", hero_id, response_body['abilities']).convert
 end
 
 get '/api/abilities' do
