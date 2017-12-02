@@ -1,5 +1,8 @@
 require 'sinatra'
 require 'json'
+require './services/heros'
+
+hero_service = Hero.new
 
 get '/' do
 	status 200
@@ -23,8 +26,20 @@ get '/api' do
 end
 
 get '/api/heros' do
-	status 501
-  body ''
+	begin
+		response = hero_service.fetch_all
+		response_body = JSON.parse response.body, symolize_names: true
+
+		raise 'Error acessing external service' unless response.code == 200
+	rescue => e
+		status 500
+		return body 'Internal server error'
+	end
+
+	status 200
+	headers 'Content-Type' => 'application/json; charset=utf-8'
+
+	body JSON.dump response_body
 end
 
 get '/api/heros/:hero_id' do
