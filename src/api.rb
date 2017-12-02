@@ -70,6 +70,8 @@ get '/api/heros/:hero_id' do
 			return body 'Hero not found'
 		end
 
+		raise 'Error acessing external service' unless response.code == 200
+
 		response_body = JSON.parse response.body, symolize_names: true
 	rescue
 		status 500
@@ -96,6 +98,8 @@ get '/api/heros/:hero_id/abilities' do
 			status 404
 			return body 'Hero not found'
 		end
+
+		raise 'Error acessing external service' unless response.code == 200
 
 		response_body = JSON.parse response.body, symolize_names: true
 	rescue
