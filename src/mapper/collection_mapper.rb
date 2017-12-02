@@ -9,6 +9,7 @@ class CollectionMapper
 	def	convert
 		{
 			links: links,
+			data: convert_results
 		}
 	end
 
@@ -32,5 +33,25 @@ class CollectionMapper
 
 	def prev_page?
 		@page > 1
+	end
+
+	def convert_results
+		@result['data'].map do |item|
+			{
+				type: 'hero',
+				id: item['id'],
+				attributes: {
+					name: item['name'],
+					real_name: item['real_name'],
+					health: item['health'],
+					armour: item['armour'],
+					shield: item['shield'],
+				},
+				links: {
+					self: "#{@base_url}/#{item['id']}",
+					abilities: "#{@base_url}/#{item['id']}/abilities",
+				},
+			}
+		end
 	end
 end

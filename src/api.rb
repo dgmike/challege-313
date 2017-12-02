@@ -42,26 +42,7 @@ get '/api/heros' do
 
 	mapper = CollectionMapper.new '/api/heros', page, limit, response_body
 
-	mapped_data = response_body['data'].map do |item|
-		{
-			type: 'hero',
-			id: item['id'],
-			attributes: {
-				name: item['name'],
-				real_name: item['real_name'],
-				health: item['health'],
-				armour: item['armour'],
-				shield: item['shield'],
-			},
-			links: {
-				self: "/api/heros/#{item['id']}",
-				abilities: "/api/heros/#{item['id']}/abilities",
-			},
-		}
-	end
-
 	data = mapper.convert
-	data[:data] = mapped_data
 
 	status 200
 	headers 'Content-Type' => 'application/json; charset=utf-8'
