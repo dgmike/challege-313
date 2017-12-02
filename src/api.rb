@@ -2,6 +2,7 @@ require 'sinatra'
 require 'json'
 require './services/heros'
 require './libs/request_filter'
+require './mapper/collection_mapper'
 
 hero_service = Hero.new
 
@@ -61,13 +62,7 @@ get '/api/heros' do
 	end
 
 	data = {
-		links: {
-			self: "/api/heros?page=#{page}&limit=#{limit}",
-			next: page.to_i >= (response_body['total'] / limit.to_f).ceil ? nil : "/api/heros?page=#{page.to_i + 1}&limit=#{limit}",
-			previous: page.to_i <= 1 ? nil : "/api/heros?page=#{page.to_i - 1}&limit=#{limit}",
-			first: "/api/heros?page=1&limit=#{limit}",
-			last: "/api/heros?page=#{(response_body['total'] / limit.to_f).ceil}&limit=#{limit}",
-		},
+		links: CollectionMapper.links('/api/heros', page, limit, response_body['total'].to_i),
 		data: mapped_data,
 	}
 
